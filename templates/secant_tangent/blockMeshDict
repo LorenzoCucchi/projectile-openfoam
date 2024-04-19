@@ -132,30 +132,8 @@ blocks
 
 edges           
 (
-    BSpline 1 6(
-        ($xogc1 $yogc1 $zogc1p)
-        ($xogc2 $yogc2 $zogc2p)
-        ($xogc3 $yogc3 $zogc3p)
-        ($xogc4 $yogc4 $zogc4p)
-        ($xogc5 $yogc5 $zogc5p)
-        ($xogc6 $yogc6 $zogc6p)
-        ($xogc7 $yogc7 $zogc7p)
-        ($xogc8 $yogc8 $zogc8p)
-        ($xogc9 $yogc9 $zogc9p)
-        ($xogc10 $yogc10 $zogc10p)
-        )
-    BSpline 1 8(
-        ($xogc1 $yogc1 $zogc1n)
-        ($xogc2 $yogc2 $zogc2n)
-        ($xogc3 $yogc3 $zogc3n)
-        ($xogc4 $yogc4 $zogc4n)
-        ($xogc5 $yogc5 $zogc5n)
-        ($xogc6 $yogc6 $zogc6n)
-        ($xogc7 $yogc7 $zogc7n)
-        ($xogc8 $yogc8 $zogc8n)
-        ($xogc9 $yogc9 $zogc9n)
-        ($xogc10 $yogc10 $zogc10n)
-        )
+    arc 1 6($xogc $yogc $zogcp)
+    arc 1 8($xogc $yogc $zogcn)
 );
 
 boundary       
