@@ -1,0 +1,399 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |				
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11                             	
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     foamRun;
+
+solver          fluid;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         2000;
+
+deltaT          1;
+//deltaT          5e-05;
+//deltaT          1e-04;
+
+writeControl    runTime;
+
+writeInterval   100;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  10;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+// ************************************************************************* //
+
+functions
+{
+
+///////////////////////////////////////////////////////////////////////////
+
+    additional_fields
+    {
+	type        writeObjects;
+    	libs        ("libutilityFunctionObjects.so");
+
+	objects ("rho" "mu");
+	//objects ("banana");
+
+        enabled          true;
+
+        writeControl   outputTime;
+	//writeControl   timeStep;
+	//writeInterval  1;
+
+    }
+
+    residuals
+    {
+        type            residuals;
+        functionObjectLibs ("libutilityFunctionObjects.so");
+        enabled         true;
+        outputControl   timeStep;
+        outputInterval  1;
+
+        fields
+        (
+            p
+            U
+            rho
+        );
+    }
+
+/*
+58
+(
+Cc
+Cf
+Cp
+CpPrevIter
+Cv
+CvPrevIter
+K
+KPrevIter
+K_0
+MRFProperties
+Residuals<scalar>
+Residuals<vector>
+Sf
+T
+TPrevIter
+U
+UPrevIter
+U_0
+Vc
+boundary
+cellZones
+data
+dpdt
+e
+ePrevIter
+e_0
+faceZones
+faces
+fvConstraints
+fvModels
+fvSchemes
+fvSolution
+kappa
+kappaPrevIter
+magSf
+momentumTransport
+mu
+muPrevIter
+neighbour
+owner
+p
+pPrevIter
+p_0
+phi
+phi_0
+physicalProperties
+pointZones
+points
+psi
+psiPrevIter
+psiPrevIter_0
+psi_0
+rho
+rhoPrevIter
+rho_0
+solutionControl
+solver
+thermophysicalTransport
+)
+*/
+
+///////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////
+vorticity
+{
+    type vorticity;
+    libs ("libfieldFunctionObjects.so");
+    enabled 	true;
+    log		true;
+    writeControl outputTime;   
+}
+
+forceCoeffs_object
+{
+	// rhoInf - reference density
+	// CofR - Centre of rotation
+	// dragDir - Direction of drag coefficient
+	// liftDir - Direction of lift coefficient
+	// pitchAxis - Pitching moment axis
+	// magUinf - free stream velocity magnitude
+	// lRef - reference length
+	// Aref - reference area
+	type forceCoeffs;
+	libs ("libforces.so");
+
+	//patches ("body1" "body2" "body3");
+	patches ("ogive" "bearing" "boat" "base");
+
+	p p;
+	U U;
+
+	//rho rhoInf;	//only for incompressible
+	rhoInf 1.225;
+
+	//// Dump to file
+	log true;
+
+	CofR (0.0 0 0);
+	liftDir (0 1 0);
+	dragDir (1 0 0);
+	pitchAxis (0 0 1);
+	magUInf 1041.263;
+	lRef 1;         // reference lenght
+	Aref 0.00003526;         // reference area 1 for 2d
+
+        writeControl   timeStep;
+        writeInterval  1;
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////
+
+yplus_stats
+{
+
+    type            yPlus;
+    libs            ("libfieldFunctionObjects.so");
+
+    enabled false;
+
+    //writeControl outputTime;
+    writeControl timeStep;
+    writeInterval 1;
+
+//Leave object empty to not save the field
+//This setup will only print the yplus values every timestep and will not save the field
+    objects ();
+    log true;
+
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////
+
+yplus_field
+{
+
+    type            yPlus;
+    libs            ("libfieldFunctionObjects.so");
+
+    enabled false;
+
+    writeControl outputTime;
+    //writeControl timeStep;
+    //writeInterval 1;
+
+//Add yPlus to save the field
+//You can also ignore this entry and by default th field will be saved
+    objects ( yPlus );
+    log false;
+
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////
+
+minmaxdomain_scalar
+{
+    type            volFieldValue;
+    libs            ("libfieldFunctionObjects.so");
+
+    enabled         true;   //true or false
+    log             false;   //write to screen
+    
+    //writeControl    writeTime;
+    writeControl    timeStep;
+    writeInterval   1;
+
+    writeFields     false;  //write solution to field value - Not needed when only reporting value to screen
+
+    writeLocation   true;   //write location in the output file
+
+    //mode component;
+
+    select      all;
+
+    operation       none;
+
+    fields
+    (
+        //p T mu rho k omega nut
+        p T rho mu
+    );
+}
+
+minmaxdomain_vector
+{
+    type            volFieldValue;
+    libs            ("libfieldFunctionObjects.so");
+
+    enabled         true;   //true or false
+    log             false;   //write to screen
+    
+    //writeControl    writeTime;
+    writeControl    timeStep;
+    writeInterval   1;
+
+    writeFields     false;  //write solution to field value - Not needed when only reporting value to screen
+
+    writeLocation   true;   //write location in the output file
+
+    //mode component;
+
+    select      all;
+
+    operation       none;
+
+    fields
+    (
+        U
+    );
+}
+
+mindomain_scalar
+{
+    $minmaxdomain_scalar
+    log             true;   //write to screen
+    operation       min;
+}
+
+mindomain_vector
+{
+    $minmaxdomain_vector
+    log             true;   //write to screen
+    operation       minMag;
+}
+
+maxdomain_scalar
+{
+    $minmaxdomain_scalar
+    log             true;   //write to screen
+    operation       max;
+}
+
+maxdomain_vector
+{
+    $minmaxdomain_vector
+    log             true;   //write to screen
+    operation       maxMag;
+}
+
+gradient_aposteriori
+{
+    type                grad;
+    libs  ("libfieldFunctionObjects.so");
+
+    enabled         true;   //true or false
+    log             false;   //write to screen
+    
+    //writeControl    writeTime;
+    writeControl    outputTime;
+
+    writeFields     false;  //write solution to field value - Not needed when only reporting value to screen
+
+    writeLocation   true;   //write location in the output file
+
+    //mode component;
+
+    select      all;
+
+    operation       none;
+    
+    field "rho";
+
+    //Numerical Schlieren
+    result "gradient_rho";        	//output field name - Optional 
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////
+
+div_gradient_aposteriori
+{
+    type                div;
+    libs  ("libfieldFunctionObjects.so");
+
+    enabled         true;   //true or false
+    log             false;   //write to screen
+    
+    //writeControl    writeTime;
+    writeControl    outputTime;
+
+    writeFields     false;  //write solution to field value - Not needed when only reporting value to screen
+
+    writeLocation   true;   //write location in the output file
+
+    //mode component;
+
+    select      all;
+
+    operation       none;
+
+    //Remember to add in fvSchemse how to compute the divergence
+    //In this case div(gradient_rho)
+    field "gradient_rho";
+
+    //Numerical shadowgraph (Laplacian of the gradient or divergence of the gradient).
+    //result "div_gradient_rho";        //output field name - Optional 
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+};

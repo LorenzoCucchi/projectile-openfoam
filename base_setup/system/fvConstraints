@@ -1,0 +1,42 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |				
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11                                  	
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      fvConstraints;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+limitp
+{
+    type       limitPressure;
+
+    minFactor  0.1;
+    maxFactor  5;	//2 Too much limiting better to use larger value
+}
+
+limitT
+{
+//These options are not used in this new setup
+    active          ssson;
+    timeStart       s0;
+    duration        s1;	//0.1-1
+//These options are not used in this new setup
+
+
+    type       limitTemperature;
+
+    min        100;
+    max        1000;
+
+    selectionMode all;
+}
+
+//************************************************************************** //
+

@@ -1,0 +1,85 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |				
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11                                   	
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+
+// unit of measure [mm]
+forw  30.0; // length forward of the projectile ogive
+boun  100.0; // boundary radius 
+wedg  0.035; // half wedge angle radians
+diameter 6.7; // bullet diameter
+ogln 2.18; // ogive length in calibers
+brln 1.45; // bearing length in calibers
+btln 0.6; // boat tail length in calibers
+btld 0.84; // boat tail diameter in calibers
+ograd 10.0; // ogive radius in caliber
+afln 90.0; // length of bound after the projectile
+
+
+
+
+// x coordinates of various sections
+x2 #calc "$forw + $diameter*$ogln";
+x3 #calc "$x2 + $diameter*$brln";
+x4 #calc "$x3 + $diameter*$btln";
+x5 #calc "$x4 + $afln";
+
+// ogive arc calculation
+alpha #calc "acos(sqrt(pow($ogln,2.0)+pow(($diameter)/2,2.0))/(2*$diameter)) -atan(($diameter)/2/$ogln)";
+xogc #calc "($ogln)/2";
+yogc #calc "(sqrt(pow($ograd,2.0)-pow(($ograd)*cos($alpha)-$xogc,2.0))-($ograd)*sin($alpha))*cos($wedg)";
+zogcp #calc "($yogc)/cos($wedg)*sin($wedg)";
+zogcn #calc "-($yogc)/cos($wedg)*sin($wedg)";
+xogc #calc "($xogc)*$diameter + $forw";
+
+// y/z coordinates of external boundary
+ybp #calc "$boun*cos($wedg)";
+zbp #calc "$boun*sin($wedg)";
+zbn #calc "$boun*sin(-$wedg)";
+
+// y/z coordinates of bullet
+y2  #calc "$diameter*cos($wedg)/2";
+ybt #calc "$diameter*$btld*cos($wedg)/2";
+z2p #calc "$diameter*sin($wedg)/2";
+z2n #calc "$diameter*sin(-$wedg)/2";
+ztp #calc "$diameter*$btld*sin($wedg)/2";
+ztn #calc "$diameter*$btld*sin(-$wedg)/2";
+
+//xcells 10;
+//ycells 10;
+zcells 1;
+
+ycells 200;
+ycells1 20;
+xcells1 100;
+xcells2 30;
+xcells3 30;
+xcells4 30;
+xcells5 100;
+
+// cells before projectile
+lx #calc "$forw";
+dx 0.5;
+xcells1 #calc "abs(($lx)/($dx))";
+
+// cells in projectile
+lx #calc "$x2 - $forw";
+dx 0.1;
+xcells2 #calc "abs(($lx)/($dx))";
+
+lx #calc "$x3 - $x2";
+dx 0.1;
+xcells3 #calc "abs(($lx)/($dx))";
+
+lx #calc "$x4 - $x3";
+dx 0.1;
+xcells4 #calc "abs(($lx)/($dx))";
+
+// cells after projectile
+lx #calc "$x5 - $x4";
+dx 0.6;
+xcells5 #calc "abs(($lx)/($dx))";
+

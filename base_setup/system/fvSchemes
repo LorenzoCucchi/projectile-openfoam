@@ -1,0 +1,112 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |				
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11                                   	
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      fvSchemes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+ddtSchemes
+{
+    //default         backward;
+    //default         CrankNicolson 0.0;
+    default         localEuler;
+}
+
+gradSchemes
+{
+    //default         Gauss linear;
+    default         cellLimited Gauss linear 1;
+    //default         cellMDLimited Gauss linear 1;
+    //default         cellLimited<cubic> 1.5 Gauss linear 1;
+
+    //limitedU         cellMDLimited Gauss linear 1;
+    //limitedT         cellMDLimited Gauss linear 1;
+    //limitedE         cellMDLimited Gauss linear 1;
+    //limitedP         cellMDLimited Gauss linear 0.5;
+
+    //limitedU         cellLimited Gauss linear 1;
+    //limitedT         cellLimited Gauss linear 1;
+    //limitedE         cellLimited Gauss linear 1;
+    //limitedP         cellLimited Gauss linear 0.5;	//0.5-1			
+
+    //grad(U)         $limitedU;
+    //grad(p)         $limitedP;
+    //grad(e)         $limited;
+    //grad(Ekp)       $limited;
+    //grad(omega)     $limitedT;
+    //grad(k)         $limitedT;
+}
+
+divSchemes
+{
+    default         none;
+    //div(phi,U)      Gauss upwind;
+
+    //div(phi,U)      Gauss linearUpwind grad(U);
+    //div(phi,U)      Gauss linearUpwind default;
+
+    //div(phi,U)      Gauss limitedLinearV 1;
+    //div(phi,U)      Gauss SuperBeeV 1;
+
+    //div(phi,U)      Gauss Minmod;	
+    div(phi,U)      Gauss MinmodV;	
+
+    //div(phi,(p|rho)) Gauss Minmod;	
+    div(phi,(p|rho)) Gauss linearUpwind default;
+
+    //div(phid,p)      Gauss Minmod;
+    div(phid,p)      Gauss linearUpwind default;
+
+    //div(phi,K)       Gauss limitedLinear 1;
+    //div(phi,e)      Gauss limitedLinear 1;	//Causes div
+
+    //div(phi,K)      Gauss upwind;
+    //div(phi,e)      Gauss upwind;
+
+    div(phi,K)      Gauss linearUpwind default;
+    div(phi,e)      Gauss linearUpwind default;
+    div(phi,h)      Gauss linearUpwind default;
+    
+    limitedT         cellLimited Gauss linear 1;
+    turbulence1      Gauss upwind;
+    turbulence2      Gauss linearUpwind limitedT;
+    turbulence3      Gauss limitedLinear 1;
+    turbulence4      Gauss Minmod;
+
+    div(phi,k)      $turbulence1;
+    div(phi,omega)  $turbulence1;
+    div(U) Gauss linear;
+    div(gradient_rho) Gauss linear;
+
+    div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear 1;
+}
+
+laplacianSchemes
+{
+    default         Gauss linear limited 0.5;
+}
+
+interpolationSchemes
+{
+    default         linear;
+}
+
+snGradSchemes
+{
+    default         limited 0.5;
+}
+
+wallDist
+{
+    method meshWave;
+}
+
+// ************************************************************************* //
