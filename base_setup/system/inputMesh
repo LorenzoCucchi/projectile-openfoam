@@ -1,0 +1,19 @@
+// unit of measure [mm]
+forw  30.0; // length forward of the projectile ogive
+boun  100.0; // boundary radius 
+wedg  0.035; // half wedge angle radians
+diameter 6.7; // bullet diameter
+ogln 2.18; // ogive length in calibers
+brln 1.45; // bearing length in calibers
+btln 0.6; // boat tail length in calibers
+btld 0.84; // boat tail diameter in calibers
+ograd 10.0; // ogive radius in caliber
+afln 90.0; // length of bound after the projectile
+zcells 1; // number of cells in the z direction wedge=1
+ycells 200;
+ycells1 20;
+dx1 0.5;
+dx2 0.1;
+dx3 0.1;
+dx4 0.1;
+dx5 0.6;
