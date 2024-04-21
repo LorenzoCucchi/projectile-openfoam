@@ -1,0 +1,223 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |				
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11                                   	
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+#include "baseMesh";
+
+convertToMeters 0.001;
+
+
+
+vertices        
+(
+    // first block
+    (0      0       0)	    //0 
+    ($forw  0       0)	    //1
+    ($forw  $ymp    $zmpp)  //2
+    (0      $ymp    $zmpp)  //3
+    ($forw  $ymp    $zmpn)  //4
+    (0      $ymp    $zmpn)  //5
+    
+    ($forw  $ybp    $zbp)	//6
+    (0      $ybp    $zbp)	//7
+    ($forw  $ybp    $zbn)	//8
+    (0      $ybp    $zbn)	//9
+    // second block
+    ($x2    $y2     $z2p)	//10
+    ($x2    $ybp    $zbp)	//11
+    ($x2    $y2     $z2n)	//12
+    ($x2    $ybp    $zbn)	//13
+    // third block
+    ($x3    $y2     $z2p)	//14
+    ($x3    $ybp    $zbp)	//15
+    ($x3    $y2     $z2n)	//16
+    ($x3    $ybp    $zbn)	//17
+    // fourth block
+    ($x4    0       0)	    //18
+    ($x4    $ybt    $ztp)	//19
+    ($x4    $ybp    $zbp)	//20
+    ($x4    $ybt    $ztn)	//21
+    ($x4    $ybp    $zbn)	//22
+    // fifth and sixth blocks
+    ($x5    0       0)	    //23
+    ($x5    $ybt    $ztp)	//24
+    ($x5    $ybp    $zbp)	//25
+    ($x5    $ybt    $ztn)	//26
+    ($x5    $ybp    $zbn)	//27
+);
+
+blocks          
+(
+    hex (0 1 4 5 0 1 2 3) ($xcells1 5 $zcells) simpleGrading (
+        (   // x-direction expansion ratio
+            (0.7 0.4 0.8)   // 70% y-dir, 40% cells, expansion = 0.8
+            (0.3 0.6 0.2)   // 30% y-dir, 60% cells, expansion = 0.2
+        )
+        (
+            (100 100 1)
+        )
+        (
+            (100 100 1)
+        )      // z-direction expansion ratio
+    )
+    hex (5 4 8 9 3 2 6 7) ($xcells1 $ycells $zcells) simpleGrading (
+        (   // x-direction expansion ratio
+            (0.7 0.4 0.8)   // 70% y-dir, 40% cells, expansion = 0.8
+            (0.3 0.6 0.2)   // 30% y-dir, 60% cells, expansion = 0.2
+        )
+        (
+            (0.15 0.5 20)    // 10% y-dir, 30% cells, expansion = 20
+            (0.85 0.5 2)    // 90% y-dir, 70% cells, expansion = 1
+        )
+        (
+            (100 100 1)
+        )      // z-direction expansion ratio
+    )
+    hex (4 12 13 8 2 10 11 6) ($xcells2 $ycells $zcells) simpleGrading (
+        (   // x-direction expansion ratio
+            (100 100 1)
+        )
+        (
+            (0.15 0.5 20)    // 10% y-dir, 30% cells, expansion = 20
+            (0.85 0.5 2)    // 90% y-dir, 70% cells, expansion = 1
+        )
+        (
+            (100 100 1)
+        )      // z-direction expansion ratio
+    )
+    hex (12 16 17 13 10 14 15 11) ($xcells3 $ycells $zcells) simpleGrading (
+        (   // x-direction expansion ratio
+            (100 100 1)    // 20% y-dir, 30% cells, expansion = 4
+        )
+        (
+            (0.15 0.5 20)    // 10% y-dir, 30% cells, expansion = 20
+            (0.85 0.5 2)    // 90% y-dir, 70% cells, expansion = 1
+        )
+        (
+            (100 100 1)
+        )      // z-direction expansion ratio
+    )
+    hex (16 21 22 17 14 19 20 15) ($xcells4 $ycells $zcells) simpleGrading (
+        (   // x-direction expansion ratio
+            (100 100 1)   
+        )
+        (
+            (0.15 0.5 20)    // 10% y-dir, 30% cells, expansion = 20
+            (0.85 0.5 2)    // 90% y-dir, 70% cells, expansion = 1
+        )
+        (
+            (100 100 1)
+        )      // z-direction expansion ratio
+    )
+    hex (18 23 26 21 18 23 24 19) ($xcells5 $ycells1 $zcells) simpleGrading (
+        (   // x-direction expansion ratio
+            (0.25 0.6 4)    // 25% y-dir, 60% cells, expansion = 4
+            (0.55 0.4 2)    // 55% y-dir, 40% cells, expansion = 2
+        )
+        (
+            (100 100 0.2)    // 20% y-dir, 30% cells, expansion = 4
+        )
+        (
+            (100 100 1)
+        )      // z-direction expansion ratio
+    )
+    hex (21 26 27 22 19 24 25 20) ($xcells5 $ycells $zcells) simpleGrading (
+        (   // x-direction expansion ratio
+            (0.25 0.6 4)    // 25% y-dir, 60% cells, expansion = 4
+            (0.55 0.4 2)    // 55% y-dir, 40% cells, expansion = 2
+
+        )
+        (
+            (0.15 0.5 20)    // 10% y-dir, 30% cells, expansion = 20
+            (0.85 0.5 2)    // 90% y-dir, 70% cells, expansion = 1
+        )
+        (
+            (100 100 1)
+        )      // z-direction expansion ratio
+    )
+);
+
+edges           
+(
+    arc 2 10($xogc $yogc $zogcp)
+    arc 4 12($xogc $yogc $zogcn)
+);
+
+boundary       
+(
+
+    inlet
+    {
+	type patch;
+        faces ((0 3 5 0)(3 7 9 5));
+    }
+
+    outlet
+    {
+	    type patch;
+        faces ((23 24 26 23)(24 25 27 26));
+    }
+
+    axis
+    {
+	    type empty;
+        faces ((0 1 1 0)(18 23 23 18));
+    }
+
+    ogive
+    {
+	    type wall;
+        faces ((1 2 4 1)(2 10 12 4));
+    }
+
+    bearing
+    {
+        type wall;
+        faces ((10 14 16 12));
+    }
+
+    boat
+    {
+        type wall;
+        faces ((14 19 21 16));
+    }
+
+    base
+    {
+        type wall;
+        faces ((18 19 21 18));
+    }
+
+    top
+    {
+	    type patch;
+        faces ((7 6 8 9)(6 11 13 8)(11 15 17 13)(15 20 22 17)(20 25 27 22));
+    }
+
+    front
+    {
+	    type wedge;
+        faces ((0 1 2 3)(3 2 6 7)(2 10 11 6)(10 14 15 11)(14 19 20 15)(19 24 25 20)(18 23 24 19));
+    }
+
+    back
+    {
+	    type wedge;
+        faces ((0 1 4 5)(5 4 8 9)(4 12 13 8)(12 16 17 13)(16 21 22 17)(21 26 27 22)(18 23 26 21));
+    }
+
+
+);
+
+
+// ************************************************************************* //

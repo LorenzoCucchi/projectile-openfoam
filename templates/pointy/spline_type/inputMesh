@@ -2,6 +2,7 @@
 forw  30.0; // length forward of the projectile ogive
 boun  100.0; // boundary radius 
 wedg  0.035; // half wedge angle radians
+mepd 0.04; // meplat diameter
 diameter 6.7; // bullet diameter
 ogln 2.18; // ogive length in calibers
 brln 1.45; // bearing length in calibers

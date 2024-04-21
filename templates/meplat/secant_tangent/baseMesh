@@ -1,0 +1,62 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |				
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11                                   	
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+
+#include "inputMesh"
+
+// x coordinates of various sections
+x2 #calc "$forw + $diameter*$ogln";
+x3 #calc "$x2 + $diameter*$brln";
+x4 #calc "$x3 + $diameter*$btln";
+x5 #calc "$x4 + $afln";
+
+// meplat calculation
+ymp #calc "($mepd)*($diameter)*cos($wedg)/2";
+zmpp #calc "($mepd)*($diameter)*sin($wedg)/2";
+zmpn #calc "($mepd)*($diameter)*sin(-$wedg)/2";
+
+R #calc "($diameter)-($mepd)*($diameter)";
+
+// ogive arc calculation
+alpha #calc "acos(sqrt(pow($ogln,2.0)+pow(($R)/2,2.0))/(2*$R)) -atan(($R)/2/$ogln)";
+xogc #calc "($ogln)/2";
+yogc #calc "((sqrt(pow($ograd,2.0)-pow(($ograd)*cos($alpha)-$xogc,2.0))-($ograd)*sin($alpha))+($mepd)*($diameter)/2)*cos($wedg)";
+zogcp #calc "($yogc)/cos($wedg)*sin($wedg)";
+zogcn #calc "-($yogc)/cos($wedg)*sin($wedg)";
+xogc #calc "($xogc)*$R + $forw";
+
+// y/z coordinates of external boundary
+ybp #calc "$boun*cos($wedg)";
+zbp #calc "$boun*sin($wedg)";
+zbn #calc "$boun*sin(-$wedg)";
+
+// y/z coordinates of bullet
+y2  #calc "$diameter*cos($wedg)/2";
+ybt #calc "$diameter*$btld*cos($wedg)/2";
+z2p #calc "$diameter*sin($wedg)/2";
+z2n #calc "$diameter*sin(-$wedg)/2";
+ztp #calc "$diameter*$btld*sin($wedg)/2";
+ztn #calc "$diameter*$btld*sin(-$wedg)/2";
+
+// cells before projectile
+lx #calc "$forw";
+xcells1 #calc "abs(($lx)/($dx1))";
+
+// cells in projectile
+lx #calc "$x2 - $forw";
+xcells2 #calc "abs(($lx)/($dx2))";
+
+lx #calc "$x3 - $x2";
+xcells3 #calc "abs(($lx)/($dx3))";
+
+lx #calc "$x4 - $x3";
+xcells4 #calc "abs(($lx)/($dx4))";
+
+// cells after projectile
+lx #calc "$x5 - $x4";
+xcells5 #calc "abs(($lx)/($dx5))";
+
